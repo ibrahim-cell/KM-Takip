@@ -1,0 +1,23 @@
+KMTakip – STEP 9 Bildirim / Widget / Uygulama Senkron Sağlamlaştırması
+
+Amaç:
+Uygulama açıkken React state'in bir önceki render değerinin Android bildirimine gönderilmesi ihtimalini ortadan kaldırmak.
+
+Yapılan hedefli düzeltmeler:
+1. JS ticker artık notification'a y değerini değil, aynı tick içinde hesaplanan elapsedNow değerini gönderir.
+2. Mesafe için di.current ref kullanılır; GPS callback'i içinde değişen mesafe anında ref'e yazılır.
+3. Anlık hız için si.current ref kullanılır; GPS callback'i içinde değişen hız anında ref'e yazılır.
+4. AndroidTracking.updateNotification(di.current, si.current, elapsedNow) ile üç değer aynı tick'ten gönderilir.
+5. Takip durdurulurken de güncel elapsed ve distance ref'lerden hesaplanır; son saniyenin kaybolması engellenir.
+6. Reset sırasında senkron ref'leri sıfırlanır.
+
+Koruma:
+- TrackingService.kt içindeki mevcut lastBridgeUpdateAt / 2 saniye fallback mantığı korunmuştur.
+- Native ticker, JS köprüsü güncelken elapsed'i ayrıca artırmaz.
+- Bildirim throttle 700 ms olarak korunmuştur.
+- Widget ve bildirim için mevcut SharedPreferences veri akışı değiştirilmemiştir.
+- Diğer uygulama özelliklerine, tasarıma ve veri yapısına dokunulmamıştır.
+
+Doğrulama:
+- Minified JS dosyası Node --check ile sözdizimi açısından doğrulanmıştır.
+- Android Gradle assembleDebug derlemesi denenmiştir; ortam dış ağa kapalı olduğu için Gradle 9.5.0 dağıtımı indirilemedi ve derleme tamamlanamadı. Bu nedenle APK build sonucu iddia edilmemektedir.

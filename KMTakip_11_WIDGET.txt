@@ -1,0 +1,18 @@
+KMTakip 11 – Widget
+
+Home-screen widget added to the KMTakip 10 project.
+
+Widget shows:
+- Current tracking state
+- Distance
+- Speed
+- Elapsed time
+
+Actions:
+- Start when idle
+- Pause / Resume while tracking
+- Stop while tracking
+- Tap title/stats to open the app
+
+Widget reads the existing km_tracking SharedPreferences used by TrackingService.
+It is refreshed by the foreground service, and the existing notification/tracking logic is preserved.

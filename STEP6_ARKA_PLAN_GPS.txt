@@ -1,0 +1,22 @@
+KM Takip - Adım 6
+Arka plan / ekran kapalı takip entegrasyonu
+
+Yapılanlar:
+- TrackingService.kt eklendi.
+- Foreground location service manifest'e tanımlandı.
+- FINE/COARSE + BACKGROUND + FOREGROUND_SERVICE_LOCATION izinleri korundu.
+- Android 13+ bildirim izni eklendi.
+- WebView'a AndroidTracking JavaScript köprüsü eklendi.
+- Web uygulamasındaki BAŞLAT ve DURDUR fonksiyonları native foreground service ile bağlandı.
+- Mevcut navigator.geolocation ve sürüş geçmişi hesaplaması korunmuştur.
+
+Test:
+1. Android Studio'da projeyi aç.
+2. Gradle Sync tamamlandıktan sonra Build > Make Project.
+3. Telefonu bağla ve uygulamayı çalıştır.
+4. Konum ve bildirim izinlerini ver.
+5. BAŞLAT'a bas.
+6. Ekranı kilitle; sürüş takibinin devam ettiğini kontrol et.
+7. DURDUR'a basınca foreground servis kapanmalıdır.
+
+Not: Bu çalışma ortamında Gradle dağıtımı internetten indirilemediği için burada APK derleme testi yapılamadı. Proje Android Studio'da mevcut Gradle önbelleği ile derlenebilir.

@@ -1,0 +1,30 @@
+KM Takip — STEP 8
+Bildirim merkezi + Widget senkron düzeltmesi
+
+Sorun:
+- Bildirim ve home-screen widget, uygulama (WebView) ile aynı oran/ölçekte
+  anlık hız, mesafe (bugünkü), süre değerlerini göstermiyordu.
+- TrackingService içindeki 1 sn'lik ticker, JS köprüsünden gelen elapsed
+  değerini de her saniye +1 yapıyordu → çift sayım / drift / ölçek kayması.
+- Uygulama açıkken JS her saniye updateNotification(M, H, y) gönderirken
+  native de aynı anda elapsed artırıyordu.
+
+Yapılan düzeltmeler (TrackingService.kt):
+1. lastBridgeUpdateAt eklendi.
+2. Ticker artık sadece son 2 saniyedir JS köprüsünden güncelleme
+   gelmemişse (arka plan / WebView interval durmuş) elapsed'i artırır.
+3. Uygulama açıkken (JS aktif) elapsed tamamen JS'ten gelir → bildirim,
+   widget ve uygulama ekranı birebir aynı değerleri gösterir.
+4. updateNotification throttle 900ms → 700ms gevşetildi; anlık hız ve
+   mesafe daha hızlı yansır.
+5. Servis başlangıcında lastBridgeUpdateAt set edilerek ilk saniyelerde
+   yanlış artış engellendi.
+
+Sonuç:
+- Anlık hız, bugünkü mesafe, süre bildirim + widget + uygulama arasında
+  senkron çalışır.
+- Arka planda (ekran kapalı) süre sayacı native olarak devam eder,
+  mesafe/hız son bilinen JS değerinde kalır (WebView hesaplaması için
+  normal davranış).
+
+Not: Bu ZIP, KMTakip_13_Logo_Guncelleme.zip temel alınarak güncellenmiştir.

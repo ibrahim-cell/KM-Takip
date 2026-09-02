@@ -1,0 +1,12 @@
+KM Takip — STEP 7
+Anlık hız GPS sapması filtresi
+
+Yapılan düzeltme:
+- GPS sabitken raporlanan küçük hız değerleri (ör. 1,6 / 1,9 km/h) artık 0,0 gösterilir.
+- Anlık hız için GPS doğruluğu (accuracy <= 25 m) kontrol edilir.
+- En az 8 metre gerçek konum hareketi ve tutarlı hız ölçümü olmadan hız gösterilmez.
+- Çok düşük hızlar (< 5 km/h) 0,0 kabul edilir; böylece sabit cihaz GPS jitter'ı hız üretmez.
+- Ortalama ve anlık hız birimi "km/h" olarak düzeltildi.
+- Mevcut mesafe, süre, yakıt, rota ve diğer özelliklere dokunulmadı.
+
+Not: Bu ZIP, KMTakip_6_ArkaPlan_GPS_Guncellenmis.zip temel alınarak güncellenmiştir.

@@ -76,6 +76,11 @@ class MainActivity : ComponentActivity() {
         fun updateNotification(distanceKm: Double, speedKmh: Double, elapsedSeconds: Long) {
             TrackingService.updateFromBridge(this@MainActivity, distanceKm, speedKmh, elapsedSeconds)
         }
+
+        @JavascriptInterface
+        fun getTrackingSnapshot(): String {
+            return TrackingService.getTrackingSnapshot()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

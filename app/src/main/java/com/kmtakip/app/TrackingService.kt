@@ -194,10 +194,6 @@ class TrackingService : Service() {
             val distanceMeters = previous.distanceTo(location).toDouble()
             val dtSeconds = (location.time - previous.time).coerceAtLeast(0L) / 1000.0
 
-            if (distanceMeters >= 2.0 && distanceMeters <= 250.0) {
-                distanceKm += distanceMeters / 1000.0
-            }
-
             val locationSpeed = if (location.hasSpeed() && location.speed >= 0f) {
                 location.speed * 3.6
             } else {
@@ -208,6 +204,12 @@ class TrackingService : Service() {
                 (distanceMeters / dtSeconds) * 3.6
             } else {
                 0.0
+            }
+
+            val plausibleMovement = distanceMeters >= 2.0 &&
+                (dtSeconds <= 0.0 || derivedSpeed <= 180.0)
+            if (plausibleMovement) {
+                distanceKm += distanceMeters / 1000.0
             }
 
             speedKmh = when {
@@ -423,22 +425,15 @@ class TrackingService : Service() {
         try {
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
-                    if (!it.hasAccuracy() || it.accuracy <= 50f) lastLocation = Location(it)
+                    val ageMs = System.currentTimeMillis() - it.time
+                    if (ageMs in 0L..30_000L && (!it.hasAccuracy() || it.accuracy <= 50f)) {
+                        lastLocation = Location(it)
+                    }
                 }
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     1000L,
                     1f,
-                    locationListener,
-                    Looper.getMainLooper()
-                )
-            }
-
-            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    2000L,
-                    5f,
                     locationListener,
                     Looper.getMainLooper()
                 )

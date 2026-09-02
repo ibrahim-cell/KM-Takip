@@ -179,10 +179,22 @@ class MainActivity : ComponentActivity() {
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS
+                ),
                 NOTIFICATION_PERMISSION_REQUEST
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        TrackingService.setUiVisible(true)
+    }
+
+    override fun onPause() {
+        TrackingService.setUiVisible(false)
+        super.onPause()
     }
 
     override fun onDestroy() {

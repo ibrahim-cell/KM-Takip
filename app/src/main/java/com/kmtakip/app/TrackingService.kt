@@ -60,6 +60,10 @@ class TrackingService : Service() {
         fun setUiVisible(visible: Boolean) {
             instance?.uiVisible = visible
         }
+
+        fun getTrackingSnapshot(): String {
+            return instance?.snapshot() ?: "{\"running\":false,\"paused\":false,\"distance\":0,\"speed\":0,\"elapsed\":0,\"motion\":false,\"uiVisible\":false}"
+        }
     }
 
     private lateinit var locationManager: LocationManager
@@ -241,6 +245,18 @@ class TrackingService : Service() {
         lastNotificationAt = now
         notificationManager().notify(NOTIFICATION_ID, buildNotification())
         KmTrackingWidget.updateAll(this)
+    }
+
+    private fun snapshot(): String {
+        return org.json.JSONObject()
+            .put("running", isRunning)
+            .put("paused", isPaused)
+            .put("distance", prefs.getFloat("distance", 0f).toDouble())
+            .put("speed", prefs.getFloat("speed", 0f).toDouble())
+            .put("elapsed", currentElapsedSeconds())
+            .put("motion", isMotionDetected)
+            .put("uiVisible", uiVisible)
+            .toString()
     }
 
     private fun updateFromUi(distanceKm: Double, speedKmh: Double, elapsedSeconds: Long) {
